@@ -3,8 +3,8 @@ var p2;
 var i = 0;
 var go = false;
 
-const TOTAL = 60;
-const MUTATE_R = 0.1;
+const TOTAL = 50;
+const MUTATE_R = 0.05;
 
 let walls = [];
 let particles = [];
@@ -15,6 +15,9 @@ var popsize = 100;
 
 var steering;
 let start,end;
+
+let speedSlider;
+let generation = 0;
 
 function setup() {
 	clear();
@@ -49,45 +52,51 @@ function setup() {
 	//console.log(p5.Vector.dist(end, start));
 	// console.log(start);
 	// console.log(particles[0].pos);
+	generation = 0;
+	speedSlider = createSlider(1, 50, 1);
 }
 
 function draw()
 {
-	background(0);
-	  for (let wall of walls) {
-	    wall.show();
-	  }
-		i = 0;
+	const val = speedSlider.value();
+	for (let n = 0; n < val ; n++){
 		if (go){
-		// let steering = createVector(map(mouseX,0,800,-2,2), map(mouseY,0,800,-2,2));
-		// particle.applyForce(steering);
-		for (let particle of particles) {
-		  particle.look(walls);
-			particle.update();
-			particle.show();
-		}
-
-		for (let i = particles.length - 1; i >= 0; i--){
-			const particle = particles[i];
-			if (!particle.status){
-				particlesFinished.push(particles.splice(i, 1)[0]);
-				// particle.fitness(start, end);
+			// let steering = createVector(map(mouseX,0,800,-2,2), map(mouseY,0,800,-2,2));
+			// particle.applyForce(steering);
+			for (let particle of particles) {
+			  particle.look(walls);
+				particle.update();
 			}
+
+			for (let i = particles.length - 1; i >= 0; i--){
+				const particle = particles[i];
+				if (!particle.status || particle.lifespan < 0){
+					particlesFinished.push(particles.splice(i, 1)[0]);
+					// particle.fitness(start, end);
+				}
+			}
+
+			if (particles.length == 0){
+				// console.log(particlesFinished);
+				generation++;
+				console.log(generation);
+				nextGeneration();
+			}
+			// steering.x -= 0.00002;
+			//console.log(steering);
 		}
-
-		if (particles.length == 0){
-			// console.log(particlesFinished);
-			nextGeneration();
-		}
-		// steering.x -= 0.00002;
-		//console.log(steering);
-
-
+}
+	background(0);
+	for (let wall of walls) {
+		wall.show();
 	}
-		ellipse(start.x, start.y, 10);
-		ellipse(end.x, end.y, 10);
-		// ellipse(400,400,20);
-		//console.log(steering);
+	for (let particle of particles){
+		particle.show();
+	}
+	ellipse(start.x, start.y, 10);
+	ellipse(end.x, end.y, 10);
+	// ellipse(400,400,20);
+	//console.log(steering);
 
 
 }
@@ -98,19 +107,21 @@ function keyPressed() {
 // Draw Circuit Manually
 function mousePressed()
 {
-	if (mouseButton === LEFT)
-	{
-		if (p1.x != 0 || p1.y != 0)
+	if (!go){
+		if (mouseButton === LEFT)
 		{
-			walls.push(new Boundary(p1.x,p1.y,mouseX,mouseY));
+			if (p1.x != 0 || p1.y != 0)
+			{
+				walls.push(new Boundary(p1.x,p1.y,mouseX,mouseY));
+			}
+			p1.x = mouseX;
+			p1.y = mouseY;
 		}
-		p1.x = mouseX;
-		p1.y = mouseY;
-	}
-	else if (mouseButton === RIGHT)
-	{
-		p1.x = mouseX;
-		p1.y = mouseY;
+		else if (mouseButton === RIGHT)
+		{
+			p1.x = mouseX;
+			p1.y = mouseY;
+		}
 	}
 }
 

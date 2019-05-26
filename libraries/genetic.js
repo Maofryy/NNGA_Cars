@@ -1,6 +1,6 @@
 
 function nextGeneration() {
-  console.log('next generation');
+  // console.log('next generation');
   // console.log(particlesFinished);
   calculateFitness(end);
   for (let i = 0; i < TOTAL; i++) {

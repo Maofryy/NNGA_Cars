@@ -2,7 +2,7 @@ class Particle {
   constructor(brain) {
     this.pos = createVector(start.x, start.y);
     this.speed = createVector();
-    this.maxspeed = 15;
+    this.maxspeed = 5;
     this.accel = createVector();
     this.status = true;
     this.steering = createVector();
@@ -19,7 +19,7 @@ class Particle {
     {
       this.brain = brain.copy();
     }else {
-      this.brain = new NeuralNetwork(this.rays.length, this.rays.length, 1);
+      this.brain = new NeuralNetwork(this.rays.length, this.rays.length + 2, 1);
     }
   }
 
@@ -37,6 +37,7 @@ class Particle {
   }
 
   update() {
+
     if (this.status)
     {
       this.pos.add(this.speed);
@@ -44,11 +45,11 @@ class Particle {
       this.speed.limit(this.maxspeed);
       this.accel.set(0,0);
       this.lifespan--;
-      console.log(this.lifespan);
       if (this.lisespan <= 0){
-        console.log(this.lifespan);
+        // console.log(this.lifespan);
         this.status = false;
       }
+      // console.log(this.lifespan);
     }else {
       this.accel.set(0,0);
     }
@@ -93,7 +94,9 @@ class Particle {
     steering.setMag(this.maxspeed / 2);
     steering.sub(this.speed);
     steering.limit(this.maxforce);
-    this.applyForce(steering);
+    if (this.status){
+      this.applyForce(steering);
+    }
     // console.log(output);
   }
 
