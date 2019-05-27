@@ -10,7 +10,7 @@ class Particle {
     this.col = 255;
     this.sight = 100;
     this.fitness = 0;
-    this.lifespan = 300;
+    this.lifespan = 700;
     this.maxforce = 0.1;
     for (let a = 0; a < 360; a += 45) {
       this.rays.push(new Ray(this.pos, radians(a)));
@@ -45,10 +45,10 @@ class Particle {
       this.speed.limit(this.maxspeed);
       this.accel.set(0,0);
       this.lifespan--;
-      if (this.lisespan <= 0){
-        // console.log(this.lifespan);
-        this.status = false;
-      }
+      // if (this.lisespan <= 0){
+      //   // console.log(this.lifespan);
+      //   this.status = false;
+      // }
       // console.log(this.lifespan);
     }else {
       this.accel.set(0,0);
@@ -127,7 +127,7 @@ class Particle {
     // f = p / total;
     // console.log(f);
     const d = p5.Vector.dist(this.pos, end);
-    this.fitness = 1 / d;
+    this.fitness = 10 / d;
   }
 
   text(){
