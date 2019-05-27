@@ -3,6 +3,7 @@ var p2;
 var i = 0;
 var go = false;
 
+const ROADSIZE = 10;
 const TOTAL = 50;
 const MUTATE_R = 0.05;
 
@@ -39,7 +40,7 @@ function setup() {
 
 	start = createVector(100, 740);
 	end = createVector(410, 70);
-	p1 = createVector(0, 0);
+	p1 = createVector();
 	for (var j = 0; j < TOTAL; j++)
 	{
   	particles[j] = new Particle();
@@ -112,6 +113,8 @@ function mousePressed()
 		{
 			if (p1.x != 0 || p1.y != 0)
 			{
+				let theta = p1.heading();
+				// drawRoad(p1, createVector(mouseX - p1.x, mouseY - p1.x), )
 				walls.push(new Boundary(p1.x,p1.y,mouseX,mouseY));
 			}
 			p1.x = mouseX;
@@ -125,21 +128,30 @@ function mousePressed()
 	}
 }
 
+function drawRoad(base, vec, theta) {
+	let A = createVector();
+	let B = createVector();
+	let d = ROADSIZE;
+	A.x = - d*Math.sin(theta);
+	A.y =  d*Math.cos(theta);
+	B.x = d*Math.sin(theta);
+	B.y = - d*Math.cos(theta);
+  push();
+  stroke(0);
+  strokeWeight(3);
+  fill(0);
+  translate(base.x, base.y);
+  line(0, 0, vec.x, vec.y);
+	walls.push(new Boundary(A.x, A.y, A.x + vec.x, A.y + vec.y));
+	walls.push(new Boundary(B.x, B.y, B.x + vec.x, B.y + vec.y));
+  // rotate(vec.heading());
+
+  pop();
+}
+
 //Draw Circuit
 
 // function mousePressed()
 // {
 // 	console.log(mouseX, mouseY);
 // }
-function drawTrack()
-{
-	line(50,50,300,50);
-	line(50,150,300,150);
-	line(300,50,600,125);
-	line(300,150,500,200);
-	line(600,125,750,350);
-	line(500,200,600,350);
-	line(750,350,750,600);
-	line(600,350,600,600);
-	print("Track Loaded");
-}
